@@ -1,0 +1,2 @@
+include ':BitCurrency'
+include ':google-play-services_lib'
