@@ -77,6 +77,7 @@ public class MainActivity extends Activity {
         {
             korbitTextView2.setText("");
         }
+        mtgoxTextView.setText("Loading...");
     }
 
     private void retrieveData() {
@@ -87,6 +88,9 @@ public class MainActivity extends Activity {
 
         BTCTask btctask = new BTCTask();
         btctask.execute(btcTextView);
+
+        MtGoxTask mttask = new MtGoxTask();
+        mttask.execute(mtgoxTextView);
 
         timeTextView.setText(android.text.format.DateFormat.format("yyyy-MM-dd HH:mm:ss", new java.util.Date()));
     }
@@ -133,6 +137,7 @@ public class MainActivity extends Activity {
         korbitTextView2 = (TextView) findViewById(R.id.textKorbitCur2);
         timeTextView = (TextView) findViewById(R.id.updated_time);
         btcTextView = (TextView) findViewById(R.id.textBTCCur);
+        mtgoxTextView = (TextView) findViewById(R.id.textMTGoxCur);
         retrieveData();
         final ImageButton im = (ImageButton) findViewById(R.id.refresh);
         im.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +164,7 @@ public class MainActivity extends Activity {
     private TextView coinbaseTextView;
     private TextView korbitTextView;
     private TextView korbitTextView2;
+    private TextView mtgoxTextView;
 
     private WebView korbitView;
     private TextView btcTextView;
