@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.android.gms.ads.*;
+import com.google.analytics.tracking.android.EasyTracker;
+
 
 public class MainActivity extends Activity {
     class MyJavaScriptInterface
@@ -169,6 +171,18 @@ public class MainActivity extends Activity {
     private WebView korbitView;
     private TextView btcTextView;
     private AdView adView;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
 
     @Override
     public void onPause() {
