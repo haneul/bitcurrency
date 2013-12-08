@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Bitcoin Currency</string>
+    <string name="app_name">비트코인 환율판</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <color name="titletextcolor">#FFFF00</color>
-    <string name="korbit">Korbit</string>
+    <string name="korbit">코빗</string>
 </resources>

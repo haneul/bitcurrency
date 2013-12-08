@@ -100,6 +100,36 @@
                 android:text="Loading..."
                 android:textSize="24dp"
                 ></TextView>
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Kraken"
+                android:textSize="24dp"
+                android:layout_gravity="center|top"
+                ></TextView>
+            <LinearLayout android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content">
+                <TextView
+                    android:id="@+id/textKrakenCur"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading..."
+                    android:textSize="24dp"
+                    ></TextView>
+                <TextView
+                    android:id="@+id/textKrakenCur2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18dp"
+                    android:visibility="gone">
+                </TextView>
+            </LinearLayout>
 
         </TableRow>
         <TableRow
@@ -109,7 +139,7 @@
                 android:id="@+id/textKorbit"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Korbit"
+                android:text="@string/korbit"
                 android:textSize="24dp"
                 android:layout_gravity="center|top"
                 ></TextView>

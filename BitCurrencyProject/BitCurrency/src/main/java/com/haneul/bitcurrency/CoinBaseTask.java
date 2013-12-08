@@ -54,7 +54,7 @@ public class CoinBaseTask extends AsyncTask<TextView, Void, Double> {
     }
 
     protected void onPostExecute(Double result) {
-        resultView.setText("$ "+ result.toString());
+        resultView.setText(String.format("$ %.2f", result));
     }
 
     private TextView resultView;

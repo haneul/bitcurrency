@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    compile files('libs/jsoup-1.7.3.jar', 'libs/libGoogleAnalyticsServices.jar')
+    compile files('libs/jsoup-1.7.3.jar', 'libs/libGoogleAnalyticsServices.jar', 'libs/AdamPublisherSDK-2.2.3.0.jar')
     compile project(':google-play-services_lib')
     compile files('../google-play-services_lib/libs/google-play-services.jar')
 }

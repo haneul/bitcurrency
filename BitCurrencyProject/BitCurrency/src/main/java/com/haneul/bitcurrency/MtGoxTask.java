@@ -68,7 +68,7 @@ public class MtGoxTask extends AsyncTask<TextView, Void, Double> {
         resultView = params[0];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet("https://data.mtgox.com/api/2/BTCUSD/money/ticker_fast");
+        HttpGet httpget = new HttpGet("http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast");
         try{
             HttpResponse response = client.execute(httpget);
             HttpEntity entity = response.getEntity();
@@ -89,7 +89,7 @@ public class MtGoxTask extends AsyncTask<TextView, Void, Double> {
         return ret;
     }
     protected void onPostExecute(Double result) {
-        resultView.setText("$ "+ result.toString());
+        resultView.setText(String.format("$ %.2f", result));
     }
 
     private TextView resultView;

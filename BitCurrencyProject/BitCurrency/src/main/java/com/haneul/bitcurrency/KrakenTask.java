@@ -15,14 +15,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 /**
  * Created by syhan on 2013. 12. 3..
  */
-public class BTCTask extends AsyncTask<TextView, Void, Double> {
+public class KrakenTask extends AsyncTask<TextView, Void, Double> {
+
+    private double readObject(JsonReader reader) throws IOException {
+        double ret = 0.0;
+        reader.beginObject();
+        while(reader.hasNext())
+        {
+            if(reader.nextName().equals("c")) {
+                reader.beginArray();
+                while(reader.hasNext()) {
+                    if(ret == 0) ret = reader.nextDouble();
+                    else reader.skipValue();
+                }
+                reader.endArray();
+            }
+            else reader.skipValue();
+        }
+        reader.endObject();
+        return ret;
+    }
+
+    private double xxbtzusd;
+    private double xxbtzkrw;
 
     private double read_btc_to_usd(InputStream in) {
-        double ret = 0;
         try{
             JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
             try {
@@ -30,40 +52,44 @@ public class BTCTask extends AsyncTask<TextView, Void, Double> {
 
                 while(reader.hasNext()) {
                     String name = reader.nextName();
-                    if(name.equals("ticker"))
+                    if(name.equals("result"))
                     {
+
                         reader.beginObject();
                         while(reader.hasNext()) {
-                            if(reader.nextName().equals("last")) {
-                                ret = reader.nextDouble();
-                                break;
+                            name = reader.nextName();
+                            if(name.equals("XXBTZUSD")) {
+                                xxbtzusd = readObject(reader);
+                            }
+                            else if(name.equals("XXBTZKRW")) {
+                                xxbtzkrw = readObject(reader);
                             }
                             else reader.skipValue();
                         }
-
                         break;
                     }
-                    reader.skipValue();
+                    else reader.skipValue();
                 }
             } catch (IOException e) {}
             finally
             {
                 reader.close();
-                return ret;
+                return xxbtzusd;
             }
         }
         catch(UnsupportedEncodingException e)
         {}
         catch(IOException e)
         {}
-        return ret;
+        return xxbtzusd;
     }
     @Override
     protected Double doInBackground(TextView... params) {
         resultView = params[0];
+        resultView2 = params[1];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet("https://btc-e.com/api/2/btc_usd/ticker");
+        HttpGet httpget = new HttpGet("https://api.kraken.com/0/public/Ticker?pair=XXBTZUSD,XXBTZKRW");
         try{
             HttpResponse response = client.execute(httpget);
             HttpEntity entity = response.getEntity();
@@ -85,9 +111,16 @@ public class BTCTask extends AsyncTask<TextView, Void, Double> {
     }
 
     protected void onPostExecute(Double result) {
-        resultView.setText(String.format("$ %.2f", result));
+        if(Locale.getDefault().getCountry().equals("KR"))
+        {
+            resultView.setText(String.format("$ %.2f", result));
+            resultView2.setText(String.format("(%d 원)", (int) xxbtzkrw));
+        }
+        else resultView.setText(String.format("$ %.2f", result));
     }
 
     private TextView resultView;
+    private TextView resultView2;
+
 
 }
