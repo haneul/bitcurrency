@@ -20,7 +20,7 @@ import java.util.Locale;
 /**
  * Created by syhan on 2013. 12. 3..
  */
-public class KrakenTask extends AsyncTask<TextView, Void, Double> {
+public class KrakenTask extends AsyncTask<Market, Void, Double> {
 
     private double readObject(JsonReader reader) throws IOException {
         double ret = 0.0;
@@ -84,9 +84,9 @@ public class KrakenTask extends AsyncTask<TextView, Void, Double> {
         return xxbtzusd;
     }
     @Override
-    protected Double doInBackground(TextView... params) {
-        resultView = params[0];
-        resultView2 = params[1];
+    protected Double doInBackground(Market... params) {
+        target = params[0];
+        //resultView2 = params[1];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
         HttpGet httpget = new HttpGet("https://api.kraken.com/0/public/Ticker?pair=XXBTZUSD,XXBTZKRW");
@@ -111,16 +111,19 @@ public class KrakenTask extends AsyncTask<TextView, Void, Double> {
     }
 
     protected void onPostExecute(Double result) {
-        if(Locale.getDefault().getCountry().equals("KR"))
+        /*if(Locale.getDefault().getCountry().equals("KR"))
         {
             resultView.setText(String.format("$ %.2f", result));
             resultView2.setText(String.format("(%d 원)", (int) xxbtzkrw));
         }
-        else resultView.setText(String.format("$ %.2f", result));
+        else resultView.setText(String.format("$ %.2f", result));*/
+        target.pushNewData(result);
+        target.doneUpdate();
     }
 
     private TextView resultView;
     private TextView resultView2;
 
+    private Market target;
 
 }

@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * Created by syhan on 2013. 12. 3..
  */
-public class BTCTask extends AsyncTask<TextView, Void, Double> {
+public class BTCTask extends AsyncTask<Market, Void, Double> {
 
     private double read_btc_to_usd(InputStream in) {
         double ret = 0;
@@ -59,8 +59,8 @@ public class BTCTask extends AsyncTask<TextView, Void, Double> {
         return ret;
     }
     @Override
-    protected Double doInBackground(TextView... params) {
-        resultView = params[0];
+    protected Double doInBackground(Market... params) {
+        target = params[0];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
         HttpGet httpget = new HttpGet("https://btc-e.com/api/2/btc_usd/ticker");
@@ -85,9 +85,10 @@ public class BTCTask extends AsyncTask<TextView, Void, Double> {
     }
 
     protected void onPostExecute(Double result) {
-        resultView.setText(String.format("$ %.2f", result));
+        target.pushNewData(result);
+        target.doneUpdate();
     }
 
-    private TextView resultView;
+    private Market target;
 
 }

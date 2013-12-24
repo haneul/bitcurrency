@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewMainActivity"
+    tools:ignore="MergeRootFrame"
+>
+    <LinearLayout
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|right"
+            android:paddingRight="15dp">
+            <ImageButton
+                android:id="@+id/refresh"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_menu_refresh" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Last Updated: ">
+            </TextView>
+            <TextView
+                android:id="@+id/updated_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Not Yet">
+            </TextView>
+
+        </LinearLayout>
+        <ListView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:id="@+id/list_view">
+        </ListView>
+
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:id="@+id/linearLayout"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:gravity="bottom">
+
+    </LinearLayout>
+    <WebView
+        android:id="@+id/korbitView"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent" android:visibility="gone"></WebView>
+
+    </FrameLayout>

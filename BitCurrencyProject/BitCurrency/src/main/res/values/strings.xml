@@ -4,6 +4,10 @@
     <string name="app_name">Bitcoin Currency</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
     <color name="titletextcolor">#FFFF00</color>
+
     <string name="korbit">Korbit</string>
+    <string name="title_activity_new_main">MainActivity</string>
+
 </resources>

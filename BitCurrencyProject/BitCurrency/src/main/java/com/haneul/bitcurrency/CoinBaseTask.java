@@ -22,7 +22,7 @@ import android.widget.TextView;
 /**
  * Created by syhan on 2013. 12. 2..
  */
-public class CoinBaseTask extends AsyncTask<TextView, Void, Double> {
+public class CoinBaseTask extends AsyncTask<Market, Void, Double> {
 
     private double read_btc_to_usd(InputStream in) {
         double ret = 0;
@@ -54,14 +54,16 @@ public class CoinBaseTask extends AsyncTask<TextView, Void, Double> {
     }
 
     protected void onPostExecute(Double result) {
-        resultView.setText(String.format("$ %.2f", result));
+        target.pushNewData(result);
+        target.doneUpdate();
+        //resultView.setText(String.format("$ %.2f", result));
     }
 
-    private TextView resultView;
+    private Market target;
 
     @Override
-    protected Double doInBackground(TextView... params) {
-        resultView = params[0];
+    protected Double doInBackground(Market... params) {
+        target = params[0];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
         HttpGet httpget = new HttpGet("https://coinbase.com/api/v1/currencies/exchange_rates");

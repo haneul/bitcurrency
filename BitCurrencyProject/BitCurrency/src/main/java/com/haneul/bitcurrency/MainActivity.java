@@ -101,17 +101,12 @@ public class MainActivity extends Activity {
     public void retrieveData(boolean manual) {
         resetData();
         CoinBaseTask task = new CoinBaseTask();
-        task.execute(coinbaseTextView);
+        //task.execute(coinbaseTextView);
         korbitView.loadUrl("https://www.korbit.co.kr");
 
-        BTCTask btctask = new BTCTask();
-        btctask.execute(btcTextView);
 
-        MtGoxTask mttask = new MtGoxTask();
-        mttask.execute(mtgoxTextView);
-
-        KrakenTask ktask = new KrakenTask();
-        ktask.execute(krakenTextView, krakenTextView2);
+        //KrakenTask ktask = new KrakenTask();
+        //ktask.execute(krakenTextView, krakenTextView2);
 
         timeTextView.setText(android.text.format.DateFormat.format("yyyy-MM-dd HH:mm:ss", new java.util.Date()));
     }
