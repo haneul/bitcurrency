@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -44,6 +45,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.mocoplex.adlib.AdlibDialogActivity"
+            android:theme="@android:style/Theme.Translucent"
+            android:configChanges="orientation|keyboard|keyboardHidden" />
+
+        <activity android:name="com.mocoplex.adlib.AdlibWebBrowserActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden" />
+        !
+        <activity android:name="com.mocoplex.adlib.AdlibVideoPlayer"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|keyboard|keyboardHidden" />
     </application>
 
 </manifest>

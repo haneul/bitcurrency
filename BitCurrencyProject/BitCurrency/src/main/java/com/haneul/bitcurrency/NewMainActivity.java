@@ -23,6 +23,9 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.mocoplex.adlib.AdlibActivity;
+import com.mocoplex.adlib.AdlibAdViewContainer;
+import com.mocoplex.adlib.AdlibConfig;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,7 +37,8 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NewMainActivity extends Activity {
+public class NewMainActivity extends AdlibActivity
+{
 
     class MyJavaScriptInterface
     {
@@ -70,6 +74,55 @@ public class NewMainActivity extends Activity {
 
             }
         }
+    }
+
+    protected void initAds()
+    {
+        // AdlibActivity 를 상속받은 액티비티이거나,
+        // 일반 Activity 에서는 AdlibManager 를 동적으로 생성한 후 아래 코드가 실행되어야 합니다. (AdlibTestProjectActivity4.java)
+
+        // Manifest 에서 <uses-permission android:name="android.permission.GET_TASKS" /> 부분 권한 추가를 확인해주세요.
+
+        // 광고 스케줄링 설정을 위해 아래 내용을 프로그램 실행시 한번만 실행합니다. (처음 실행되는 activity에서 한번만 호출해주세요.)
+        // 광고 subview 의 패키지 경로를 설정합니다. (실제로 작성된 패키지 경로로 수정해주세요.)
+
+        // 쓰지 않을 광고플랫폼은 삭제해주세요.
+        AdlibConfig.getInstance().bindPlatform("ADAM","com.haneul.bitcurrency.ads.SubAdlibAdViewAdam");
+        AdlibConfig.getInstance().bindPlatform("ADMOB","com.haneul.bitcurrency.ads.SubAdlibAdViewAdmob");
+        /*AdlibConfig.getInstance().bindPlatform("CAULY","test.adlib.project.ads.SubAdlibAdViewCauly");
+        AdlibConfig.getInstance().bindPlatform("TAD","test.adlib.project.ads.SubAdlibAdViewTAD");
+        AdlibConfig.getInstance().bindPlatform("NAVER","test.adlib.project.ads.SubAdlibAdViewNaverAdPost");
+        AdlibConfig.getInstance().bindPlatform("SHALLWEAD","test.adlib.project.ads.SubAdlibAdViewShallWeAd");
+        AdlibConfig.getInstance().bindPlatform("INMOBI","test.adlib.project.ads.SubAdlibAdViewInmobi");
+        AdlibConfig.getInstance().bindPlatform("MMEDIA","test.adlib.project.ads.SubAdlibAdViewMMedia");
+        AdlibConfig.getInstance().bindPlatform("MOBCLIX","test.adlib.project.ads.SubAdlibAdViewMobclix");
+        AdlibConfig.getInstance().bindPlatform("ADMOBECPM","test.adlib.project.ads.SubAdlibAdViewAdmobECPM");
+        AdlibConfig.getInstance().bindPlatform("UPLUSAD","test.adlib.project.ads.SubAdlibAdViewUPlusAD");
+        AdlibConfig.getInstance().bindPlatform("MEZZO","test.adlib.project.ads.SubAdlibAdViewMezzo");
+        AdlibConfig.getInstance().bindPlatform("AMAZON","test.adlib.project.ads.SubAdlibAdViewAmazon");
+        AdlibConfig.getInstance().bindPlatform("ADHUB","test.adlib.project.ads.SubAdlibAdViewAdHub");*/
+        // 쓰지 않을 플랫폼은 JAR 파일 및 test.adlib.project.ads 경로에서 삭제하면 최종 바이너리 크기를 줄일 수 있습니다.
+
+        // SMART* dialog 노출 시점 선택시 / setAdlibKey 키가 호출되는 activity 가 시작 activity 이며 해당 activity가 종료되면 app 종료로 인식합니다.
+        // adlibr.com 에서 발급받은 api 키를 입력합니다.
+        // https://sec.adlibr.com/admin/dashboard.jsp
+        // ADLIB - API - KEY 설정
+        AdlibConfig.getInstance().setAdlibKey("52c58c61e4b0f34da5056016");  //  <-- 테스트 키 입니다.
+
+    }
+
+    AdlibAdViewContainer avc;
+
+    private void createAdlibAd()
+    {
+        avc = new AdlibAdViewContainer(this);
+        LinearLayout ll = (LinearLayout) findViewById(R.id.linearLayout);
+        ll.addView(avc);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.FILL_PARENT);
+        params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        avc.setLayoutParams(params);
+        bindAdsContainer(avc);
     }
 
     private void createAdamAd()
@@ -194,9 +247,11 @@ public class NewMainActivity extends Activity {
                 retrieveData();
             }
         });
+        initAds();
+        createAdlibAd();
 
-        if(localeKR) createAdamAd();
-        else createGoogleAd();
+        //if(localeKR) createAdamAd();
+        //else createGoogleAd();
     }
 
     private WebView korbitView;
@@ -228,20 +283,20 @@ public class NewMainActivity extends Activity {
             }
         };
         timer.scheduleAtFixedRate(r, 0, 5 * 60 * 1000);
-        if(!localeKR) adView.resume();
-        else adamView.resume();
+        //if(!localeKR) adView.resume();
+        //else adamView.resume();
     }
 
     @Override
     public void onPause() {
 
-        if(!localeKR) {
-            adView.pause();
-        }
-        else
-        {
-            adamView.pause();
-        }
+//        if(!localeKR) {
+//            adView.pause();
+//        }
+//        else
+//        {
+//            adamView.pause();
+//        }
 
         timer.cancel();
         timer.purge();
