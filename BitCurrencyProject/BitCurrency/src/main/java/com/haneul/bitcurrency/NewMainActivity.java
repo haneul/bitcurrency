@@ -3,7 +3,12 @@ package com.haneul.bitcurrency;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,9 +36,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,15 +67,15 @@ public class NewMainActivity extends AdlibActivity
                 if(m.find())
                 {
                     final double finalprice = Double.parseDouble(m.group());
-                    markets[5].pushNewData(finalprice / usdkrw);
+                    korbitMarket.pushNewData(finalprice / usdkrw);
                     if(Locale.getDefault().getCountry().equals("KR"))
                     {
-                       markets[5].additional = String.format("(%d 원)", (int) finalprice);
+                        korbitMarket.additional = String.format("(%d 원)", (int) finalprice);
                     }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            markets[5].doneUpdate();
+                            korbitMarket.doneUpdate();
                         }
                     });
                 }
@@ -112,6 +120,7 @@ public class NewMainActivity extends AdlibActivity
     }
 
     AdlibAdViewContainer avc;
+    Market korbitMarket;
 
     private void createAdlibAd()
     {
@@ -156,7 +165,7 @@ public class NewMainActivity extends AdlibActivity
     private boolean localeKR = false;
     private AdView adView;
     private net.daum.adam.publisher.AdView adamView;
-
+    private int update_rate_mins = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,45 +173,99 @@ public class NewMainActivity extends AdlibActivity
         localeKR = Locale.getDefault().getCountry().equals("KR");
         timeTextView = (TextView) findViewById(R.id.updated_time);
         marketView = (ListView) findViewById(R.id.list_view);
-        markets = new Market[] {
-                new Market("CoinBase"), new Market("MtGox"), new Market("BTC-e"), new Market("Kraken"),
-                new Market("BTCChina"), new Market(getResources().getString(R.string.korbit)),
-        };
-        markets[0].getNewData =  new Runnable() {
-        @Override
-        public void run() {
-            new CoinBaseTask().execute(markets[0]);
-        }};
 
-        markets[1].getNewData = new Runnable() {
-            @Override
-            public void run() {
-                new MtGoxTask().execute(markets[1]);
-            }};
+        SharedPreferences sharedprefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed = sharedprefs.edit();
+        ed.putInt("prefV", 1);
+        ed.commit();
+        if(sharedprefs.getBoolean("coinbase_btcusd", true))
+        {
+            final Market m = new Market("CoinBase", "BTC/USD");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new CoinBaseTask().execute(m);
+                }};
+            markets.add(m);
+        }
 
-        markets[2].getNewData =  new Runnable() {
-            @Override
-            public void run() {
-                new BTCTask().execute(markets[2]);
-            }};
+        if(sharedprefs.getBoolean("mtgox_btcusd", true))
+        {
+            final Market m = new Market("MtGox", "BTC/USD");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new MtGoxTask().execute(m);
+                }};
+            markets.add(m);
+        }
 
-        markets[3].getNewData =  new Runnable() {
-            @Override
-            public void run() {
-                new KrakenTask().execute(markets[3]);
-            }};
+        if(sharedprefs.getBoolean("btce_btcusd", false))
+        {
+            final Market m = new Market("BTC-e", "BTC/USD");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new BTCTask().execute(m);
+                }};
+            markets.add(m);
+        }
 
-        markets[4].getNewData =  new Runnable() {
-            @Override
-            public void run() {
-                new BTCChinaTask().execute(markets[4]);
-            }};
+        if(sharedprefs.getBoolean("kraken_btcusd", false))
+        {
+            final Market m = new Market("Kraken", "BTC/USD");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new KrakenTask().execute(m);
+                }};
+            markets.add(m);
+        }
 
-        markets[5].getNewData = new Runnable() {
-            @Override
-            public void run() {
-                korbitView.loadUrl("https://www.korbit.co.kr");
-            }};
+        if(sharedprefs.getBoolean("btcchina_btccyn", true))
+        {
+            final Market m = new Market("BTCChina", "BTC/CNY");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new BTCChinaTask().execute(m);
+                }};
+            markets.add(m);
+        }
+
+        if(sharedprefs.getBoolean("korbit_btckrw", true))
+        {
+            final Market m = new Market(getResources().getString(R.string.korbit), "BTC/KRW");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    korbitView.loadUrl("https://www.korbit.co.kr");
+                }};
+            korbitMarket = m;
+            markets.add(m);
+        }
+
+        if(sharedprefs.getBoolean("btce_ltcusd", true))
+        {
+            final Market m = new Market("BTC-e", "LTC/USD");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new LTCTask().execute(m);
+                }};
+            markets.add(m);
+        }
+
+        /*if(sharedprefs.getBoolean("ddengle_btckrw", false))
+        {
+            final Market m = new Market(getResources().getString(R.string.ddengle), "BTC/KRW");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new DDengleBTCTask().execute(m);
+                }};
+            markets.add(m);
+        }*/
 
         korbitView = (WebView) findViewById(R.id.korbitView);
 
@@ -240,16 +303,10 @@ public class NewMainActivity extends AdlibActivity
         MarketAdapter adapter = new MarketAdapter(this, markets);
         marketView.setAdapter(adapter);
 
-        final ImageButton im = (ImageButton) findViewById(R.id.refresh);
-        im.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                retrieveData();
-            }
-        });
         initAds();
         createAdlibAd();
-
+        //SharedPreferences shareprefs = PreferenceManager.getDefaultSharedPreferences(this);
+        update_rate_mins = Integer.parseInt(sharedprefs.getString("refresh_preference","5"));
         //if(localeKR) createAdamAd();
         //else createGoogleAd();
     }
@@ -270,7 +327,9 @@ public class NewMainActivity extends AdlibActivity
     @Override
     public void onResume() {
         super.onResume();
-        timer = new Timer();
+
+        SharedPreferences shareprefs = PreferenceManager.getDefaultSharedPreferences(this);
+        update_rate_mins = Integer.parseInt(shareprefs.getString("refresh_preference","5"));
         TimerTask r = new TimerTask() {
             @Override
             public void run() {
@@ -282,7 +341,10 @@ public class NewMainActivity extends AdlibActivity
                 });
             }
         };
-        timer.scheduleAtFixedRate(r, 0, 5 * 60 * 1000);
+        if(update_rate_mins != -1) {
+            timer = new Timer();
+            timer.scheduleAtFixedRate(r, 0, update_rate_mins * 60 * 1000);
+        }
         //if(!localeKR) adView.resume();
         //else adamView.resume();
     }
@@ -297,10 +359,11 @@ public class NewMainActivity extends AdlibActivity
 //        {
 //            adamView.pause();
 //        }
-
-        timer.cancel();
-        timer.purge();
-        timer = null;
+        if(timer != null) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
         super.onPause();
     }
 
@@ -315,7 +378,7 @@ public class NewMainActivity extends AdlibActivity
         super.onStop();
         EasyTracker.getInstance(this).activityStop(this);
     }
-    private Market [] markets;
+    private List<Market> markets = new ArrayList<Market>();
     private ListView marketView;
 
     @Override
@@ -333,6 +396,11 @@ public class NewMainActivity extends AdlibActivity
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.action_refresh:
+                retrieveData();
                 return true;
         }
         return super.onOptionsItemSelected(item);

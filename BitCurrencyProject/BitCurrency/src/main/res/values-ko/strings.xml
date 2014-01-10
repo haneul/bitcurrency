@@ -6,4 +6,6 @@
     <string name="action_settings">Settings</string>
     <color name="titletextcolor">#FFFF00</color>
     <string name="korbit">코빗</string>
+    <string name="ddengle">땡글</string>
+    <string name="automatic_update">자동 업데이트</string>
 </resources>

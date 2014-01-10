@@ -15,11 +15,13 @@ public class Market {
     public Runnable getNewData;
     private ArrayAdapter<Market> myAdapter;
     public String additional;
+    public String currency = "BTC/USD";
 
-    public Market(String name)
+    public Market(String name, String currency)
     {
         this.name = name;
         this.valueData = "Loading...";
+        this.currency = currency;
         prevs = new Vector<Double>();
     }
 

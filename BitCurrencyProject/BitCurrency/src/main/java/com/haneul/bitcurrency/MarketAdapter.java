@@ -8,13 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by syhan on 2013. 12. 19..
  */
 public class MarketAdapter extends ArrayAdapter<Market> {
-    private final Market[] markets;
+    private final List<Market> markets;
     private final Context context;
-    public MarketAdapter(Context context, Market[] markets)
+    public MarketAdapter(Context context, List<Market> markets)
     {
         super(context, R.layout.rowlayout, markets);
         this.context = context;
@@ -34,7 +36,7 @@ public class MarketAdapter extends ArrayAdapter<Market> {
         //ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView valueView = (TextView) rowView.findViewById(R.id.value);
         TextView prevView = (TextView) rowView.findViewById(R.id.prevs);
-        Market m = markets[position];
+        Market m = markets.get(position);
         textView.setText(m.name);
         valueView.setText(String.format("$ %.2f", m.value));
         prevView.setText(m.getRecentData());
@@ -47,6 +49,8 @@ public class MarketAdapter extends ArrayAdapter<Market> {
             additional.setVisibility(View.VISIBLE);
             additional.setText(m.additional);
         }
+        TextView currency = (TextView) rowView.findViewById(R.id.currency);
+        currency.setText(m.currency);
 
         return rowView;
     }

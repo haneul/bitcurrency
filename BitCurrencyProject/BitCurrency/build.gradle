@@ -23,9 +23,10 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:support-v4:18.0.0'
     compile files('libs/jsoup-1.7.3.jar')
     compile files('libs/libGoogleAnalyticsServices.jar')
-    compile files('libs/AdamPublisherSDK-2.2.3.0.jar')
+    compile files('libs/AdamPublisherSDK-2.2.3.3.jar')
     compile project(':google-play-services_lib')
     compile files('../google-play-services_lib/libs/google-play-services.jar')
     compile files('libs/adlibr.3.9.1.jar')

@@ -1,0 +1,56 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="refresh_preference"
+        android:title="@string/automatic_update"
+        android:entries="@array/pref_sync_frequency_titles"
+        android:entryValues="@array/pref_sync_frequency_values"
+        android:defaultValue="5"
+        />
+
+    <PreferenceCategory android:title="Bitcoin">
+        <CheckBoxPreference
+            android:title="CoinBase"
+            android:key="coinbase_btcusd"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:title="MtGox"
+            android:key="mtgox_btcusd"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:title="BTC-e"
+            android:key="btce_btcusd"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:title="Kraken"
+            android:key="kraken_btcusd"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:title="BTCChina"
+            android:key="btcchina_btccyn"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:title="@string/korbit"
+            android:key="korbit_btckrw"
+            android:defaultValue="true" />
+        <!--<CheckBoxPreference
+            android:title="@string/ddengle"
+            android:key="ddengle_btckrw"
+            android:defaultValue="false"
+            />-->
+
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Litecoin">
+        <CheckBoxPreference
+            android:title="BTC-e"
+            android:key="btce_ltcusd"
+            android:defaultValue="true" />
+        <!--<CheckBoxPreference
+            android:title="@string/ddengle"
+            android:key="ddengle_ltckrw"
+            android:defaultValue="false"
+            />-->
+    </PreferenceCategory>
+
+</PreferenceScreen>

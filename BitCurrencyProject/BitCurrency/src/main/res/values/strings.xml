@@ -8,6 +8,7 @@
     <color name="titletextcolor">#FFFF00</color>
 
     <string name="korbit">Korbit</string>
+    <string name="ddengle">Ddengle</string>
     <string name="title_activity_new_main">MainActivity</string>
-
+    <string name="automatic_update">Automatic Update</string>
 </resources>

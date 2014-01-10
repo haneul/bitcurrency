@@ -29,7 +29,7 @@
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>1 minutes</item>
+        <item>1 minute</item>
         <item>5 minutes</item>
         <item>15 minutes</item>
         <item>1 hour</item>

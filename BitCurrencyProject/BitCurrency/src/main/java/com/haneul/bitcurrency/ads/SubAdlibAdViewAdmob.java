@@ -23,6 +23,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 
 public class SubAdlibAdViewAdmob extends SubAdlibAdViewCore  {
@@ -46,6 +47,7 @@ public class SubAdlibAdViewAdmob extends SubAdlibAdViewCore  {
 	
 	public void initAdmobView()
 	{
+        Log.d("Admob", "init");
 		ad = new AdView((Activity) this.getContext());
         ad.setAdUnitId(admobID);
         ad.setAdSize(AdSize.SMART_BANNER);
@@ -96,6 +98,7 @@ public class SubAdlibAdViewAdmob extends SubAdlibAdViewCore  {
 	// 실제로 광고를 보여주기 위하여 요청합니다.
 	public void query()
 	{
+        Log.d("Admob", "query");
 		if(ad == null)
 			initAdmobView();
 		

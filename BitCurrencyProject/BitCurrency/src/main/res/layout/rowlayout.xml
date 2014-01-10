@@ -12,7 +12,10 @@
         android:layout_marginTop="4px"
         android:src="@drawable/ic_launcher" >
     </ImageView>-->
-
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
@@ -22,6 +25,14 @@
         android:layout_marginLeft="10dp"
         android:width="130dp">
     </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currency"
+            android:textSize="16dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#999999"/>
+        </LinearLayout>
 
     <LinearLayout
         android:layout_height="wrap_content"
@@ -59,7 +70,8 @@
             android:id="@+id/prevs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textSize="16dp" >
         </TextView>
     </LinearLayout>

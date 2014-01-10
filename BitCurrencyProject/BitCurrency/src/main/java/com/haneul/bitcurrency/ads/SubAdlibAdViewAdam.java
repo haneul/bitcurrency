@@ -25,6 +25,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.LinearLayout;
 
@@ -49,6 +50,7 @@ public class SubAdlibAdViewAdam extends SubAdlibAdViewCore  {
 	
 	public void initAdamView()
 	{
+        Log.d("ADAM", "init");
 		ad = new net.daum.adam.publisher.AdView(this.getContext());
 		
 		// 할당 받은 clientId 설정
@@ -84,6 +86,7 @@ public class SubAdlibAdViewAdam extends SubAdlibAdViewCore  {
 	// 실제로 광고를 보여주기 위하여 요청합니다.	
 	public void query()
 	{
+        Log.d("ADAM", "query");
 		bGotAd = false;
 		
 		if(ad == null)
