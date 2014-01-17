@@ -30,6 +30,10 @@
             android:key="btcchina_btccyn"
             android:defaultValue="true" />
         <CheckBoxPreference
+            android:title="Huobi"
+            android:key="huobi_btccyn"
+            android:defaultValue="true" />
+        <CheckBoxPreference
             android:title="@string/korbit"
             android:key="korbit_btckrw"
             android:defaultValue="true" />

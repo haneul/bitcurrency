@@ -84,6 +84,7 @@ public class NewMainActivity extends AdlibActivity
         }
     }
 
+
     protected void initAds()
     {
         // AdlibActivity 를 상속받은 액티비티이거나,
@@ -233,6 +234,17 @@ public class NewMainActivity extends AdlibActivity
             markets.add(m);
         }
 
+        if(sharedprefs.getBoolean("huobi_btccyn", true))
+        {
+            final Market m = new Market("Huobi", "BTC/CNY");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new HuobiTask().execute(m);
+                }};
+            markets.add(m);
+        }
+
         if(sharedprefs.getBoolean("korbit_btckrw", true))
         {
             final Market m = new Market(getResources().getString(R.string.korbit), "BTC/KRW");
@@ -298,7 +310,6 @@ public class NewMainActivity extends AdlibActivity
 
             }
         });
-
 
         MarketAdapter adapter = new MarketAdapter(this, markets);
         marketView.setAdapter(adapter);
