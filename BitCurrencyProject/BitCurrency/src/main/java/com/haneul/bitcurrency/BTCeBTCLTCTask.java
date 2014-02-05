@@ -9,10 +9,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,12 +18,43 @@ import java.io.UnsupportedEncodingException;
 /**
  * Created by syhan on 2013. 12. 3..
  */
-public class DDengleBTCTask extends AsyncTask<Market, Void, Double> {
+public class BTCeBTCLTCTask extends AsyncTask<Market, Void, Double> {
 
-    private double read_btc_to_krw(String html) {
+    private double read_btc_to_usd(InputStream in) {
         double ret = 0;
-        Document doc = Jsoup.parse(html);
+        try{
+            JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+            try {
+                reader.beginObject();
 
+                while(reader.hasNext()) {
+                    String name = reader.nextName();
+                    if(name.equals("ticker"))
+                    {
+                        reader.beginObject();
+                        while(reader.hasNext()) {
+                            if(reader.nextName().equals("last")) {
+                                ret = reader.nextDouble();
+                                break;
+                            }
+                            else reader.skipValue();
+                        }
+
+                        break;
+                    }
+                    reader.skipValue();
+                }
+            } catch (IOException e) {}
+            finally
+            {
+                reader.close();
+                return ret;
+            }
+        }
+        catch(UnsupportedEncodingException e)
+        {}
+        catch(IOException e)
+        {}
         return ret;
     }
     @Override
@@ -34,7 +62,7 @@ public class DDengleBTCTask extends AsyncTask<Market, Void, Double> {
         target = params[0];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet("https://www.ddengle.com/pricebtc");
+        HttpGet httpget = new HttpGet("https://btc-e.com/api/2/ltc_btc/ticker");
         try{
             HttpResponse response = client.execute(httpget);
             HttpEntity entity = response.getEntity();
@@ -45,25 +73,18 @@ public class DDengleBTCTask extends AsyncTask<Market, Void, Double> {
 
                 // A Simple JSON Response Read
                 InputStream instream = entity.getContent();
-                BufferedReader br = new BufferedReader(new InputStreamReader(instream));
-                String html = "";
-                String line;
-                while((line=br.readLine()) != null)
-                {
-                    html += line;
-                }
-                read_btc_to_krw(html);
+                ret = read_btc_to_usd(instream);
                 instream.close();
             }
         }  catch(ClientProtocolException p)
         {} catch(IOException e)
         {}
-
+        target.pushNewData(1/ret);
         return ret;
     }
 
     protected void onPostExecute(Double result) {
-        target.pushNewData(result);
+
         target.doneUpdate();
     }
 

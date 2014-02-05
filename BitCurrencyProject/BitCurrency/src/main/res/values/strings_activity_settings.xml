@@ -13,17 +13,6 @@
     <string name="pref_default_display_name">John Smith</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
@@ -42,7 +31,20 @@
         <item>60</item>
         <item>-1</item>
     </string-array>
-
+    <string-array name="pref_display_currency_titles">
+        <item>US Dollar</item>
+        <item>Euro</item>
+        <item>Korea Won</item>
+        <item>China Yuan</item>
+        <item>Japan Yen</item>
+    </string-array>
+    <string-array name="pref_display_currency_values">
+        <item>usd</item>
+        <item>eur</item>
+        <item>krw</item>
+        <item>cny</item>
+        <item>jpy</item>
+    </string-array>
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->

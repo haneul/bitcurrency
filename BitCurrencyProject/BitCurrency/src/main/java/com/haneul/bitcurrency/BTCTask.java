@@ -80,12 +80,12 @@ public class BTCTask extends AsyncTask<Market, Void, Double> {
         }  catch(ClientProtocolException p)
         {} catch(IOException e)
         {}
-
+        target.pushNewData(ret);
         return ret;
     }
 
     protected void onPostExecute(Double result) {
-        target.pushNewData(result);
+
         target.doneUpdate();
     }
 

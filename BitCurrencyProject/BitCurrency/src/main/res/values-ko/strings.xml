@@ -8,4 +8,5 @@
     <string name="korbit">코빗</string>
     <string name="ddengle">땡글</string>
     <string name="automatic_update">자동 업데이트</string>
+    <string name="display_currency">표시 통화</string>
 </resources>

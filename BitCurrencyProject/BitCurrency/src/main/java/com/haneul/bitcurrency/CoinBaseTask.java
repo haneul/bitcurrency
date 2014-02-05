@@ -54,7 +54,7 @@ public class CoinBaseTask extends AsyncTask<Market, Void, Double> {
     }
 
     protected void onPostExecute(Double result) {
-        target.pushNewData(result);
+
         target.doneUpdate();
         //resultView.setText(String.format("$ %.2f", result));
     }
@@ -83,7 +83,7 @@ public class CoinBaseTask extends AsyncTask<Market, Void, Double> {
         }  catch(ClientProtocolException p)
         {} catch(IOException e)
         {}
-
+        target.pushNewData(ret);
         return ret;
     }
 }

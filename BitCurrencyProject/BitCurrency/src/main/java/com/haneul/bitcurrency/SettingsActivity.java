@@ -68,6 +68,8 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             ListPreference listPreference = (ListPreference) getPreferenceManager().findPreference("refresh_preference");
             listPreference.setSummary(listPreference.getEntry());
+            ListPreference currencyPref = (ListPreference) getPreferenceManager().findPreference("display_currency");
+            currencyPref.setSummary(currencyPref.getEntry());
         }
     }
 

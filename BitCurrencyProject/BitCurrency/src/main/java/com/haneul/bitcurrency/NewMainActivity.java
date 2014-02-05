@@ -1,25 +1,16 @@
 package com.haneul.bitcurrency;
 
-import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +19,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.haneul.bitcurrency.util.CurrencyChange;
 import com.mocoplex.adlib.AdlibActivity;
 import com.mocoplex.adlib.AdlibAdViewContainer;
 import com.mocoplex.adlib.AdlibConfig;
@@ -36,12 +28,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +51,9 @@ public class NewMainActivity extends AdlibActivity
             if(title.contains("Korbit"))
             {
                 Element el_usdkrw = doc.body().getElementsByClass("usdkrw").first();
-                final double usdkrw = Float.parseFloat(el_usdkrw.attr("data-usdkrw"));
+                CurrencyChange c = CurrencyChange.getCurrency(Market.CURRENCY.USD, Market.CURRENCY.KRW);
+                double usdkrw = c.getVal();
+
                 Element el_finalprice = el_usdkrw.child(1);
                 Pattern p = Pattern.compile("\\d+");
                 Matcher m = p.matcher(el_finalprice.text().replace(",", ""));
@@ -67,11 +61,11 @@ public class NewMainActivity extends AdlibActivity
                 if(m.find())
                 {
                     final double finalprice = Double.parseDouble(m.group());
-                    korbitMarket.pushNewData(finalprice / usdkrw);
-                    if(Locale.getDefault().getCountry().equals("KR"))
-                    {
-                        korbitMarket.additional = String.format("(%d 원)", (int) finalprice);
-                    }
+                    korbitMarket.pushNewData(finalprice);
+
+                    //NumberFormat kr = NumberFormat.getCurrencyInstance(Locale.KOREA);
+                    //korbitMarket.additional = "("+kr.format(finalprice)+")";
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -163,22 +157,24 @@ public class NewMainActivity extends AdlibActivity
         adView.loadAd(adRequest);
     }
 
-    private boolean localeKR = false;
     private AdView adView;
     private net.daum.adam.publisher.AdView adamView;
     private int update_rate_mins = 5;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.newactivity_main);
-        localeKR = Locale.getDefault().getCountry().equals("KR");
-        timeTextView = (TextView) findViewById(R.id.updated_time);
-        marketView = (ListView) findViewById(R.id.list_view);
 
+    private void initMarkets()
+    {
         SharedPreferences sharedprefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor ed = sharedprefs.edit();
-        ed.putInt("prefV", 1);
-        ed.commit();
+        markets.clear();
+        if(sharedprefs.getBoolean("bitstamp_btcusd", true))
+        {
+            final Market m = new Market("BitStamp", "BTC/USD");
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new BitStamp().execute(m);
+                }};
+            markets.add(m);
+        }
         if(sharedprefs.getBoolean("coinbase_btcusd", true))
         {
             final Market m = new Market("CoinBase", "BTC/USD");
@@ -225,7 +221,7 @@ public class NewMainActivity extends AdlibActivity
 
         if(sharedprefs.getBoolean("btcchina_btccyn", true))
         {
-            final Market m = new Market("BTCChina", "BTC/CNY");
+            final Market m = new Market("BTCChina", "BTC/CNY", Market.CURRENCY.CNY);
             m.getNewData = new Runnable() {
                 @Override
                 public void run() {
@@ -236,7 +232,7 @@ public class NewMainActivity extends AdlibActivity
 
         if(sharedprefs.getBoolean("huobi_btccyn", true))
         {
-            final Market m = new Market("Huobi", "BTC/CNY");
+            final Market m = new Market("Huobi", "BTC/CNY", Market.CURRENCY.CNY);
             m.getNewData = new Runnable() {
                 @Override
                 public void run() {
@@ -247,13 +243,36 @@ public class NewMainActivity extends AdlibActivity
 
         if(sharedprefs.getBoolean("korbit_btckrw", true))
         {
-            final Market m = new Market(getResources().getString(R.string.korbit), "BTC/KRW");
+            final Market m = new Market(getResources().getString(R.string.korbit), "BTC/KRW", Market.CURRENCY.KRW);
             m.getNewData = new Runnable() {
                 @Override
                 public void run() {
+
                     korbitView.loadUrl("https://www.korbit.co.kr");
                 }};
             korbitMarket = m;
+            markets.add(m);
+        }
+
+        if(sharedprefs.getBoolean("ddengle_btckrw", true))
+        {
+            final Market m = new Market(getResources().getString(R.string.ddengle), "BTC/KRW", Market.CURRENCY.KRW);
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new DdengleBTCTask().execute(m);
+                }};
+            markets.add(m);
+        }
+
+        if(sharedprefs.getBoolean("xcoin_btckrw", true))
+        {
+            final Market m = new Market("XCoin", "BTC/KRW", Market.CURRENCY.KRW);
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new XCoinBTCTask().execute(m);
+                }};
             markets.add(m);
         }
 
@@ -268,16 +287,57 @@ public class NewMainActivity extends AdlibActivity
             markets.add(m);
         }
 
-        /*if(sharedprefs.getBoolean("ddengle_btckrw", false))
+        if(sharedprefs.getBoolean("ddengle_ltckrw", true))
         {
-            final Market m = new Market(getResources().getString(R.string.ddengle), "BTC/KRW");
+            final Market m = new Market(getResources().getString(R.string.ddengle), "LTC/KRW", Market.CURRENCY.KRW);
             m.getNewData = new Runnable() {
                 @Override
                 public void run() {
-                    new DDengleBTCTask().execute(m);
+                    new DdengleLTCTask().execute(m);
                 }};
             markets.add(m);
-        }*/
+        }
+
+        if(sharedprefs.getBoolean("btce_btcltc", true))
+        {
+            final Market m = new Market("BTC-e", "BTC/LTC", Market.CURRENCY.LTC);
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new BTCeBTCLTCTask().execute(m);
+                }};
+            markets.add(m);
+        }
+
+        if(sharedprefs.getBoolean("btce_ltcusd", true))
+        {
+            final Market m = new Market("Kraken", "XBT/LTC", Market.CURRENCY.LTC);
+            m.getNewData = new Runnable() {
+                @Override
+                public void run() {
+                    new KrakenBTCLTCTask().execute(m);
+                }};
+            markets.add(m);
+        }
+
+        MarketAdapter adapter = new MarketAdapter(this, markets);
+        marketView.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.newactivity_main);
+        timeTextView = (TextView) findViewById(R.id.updated_time);
+        marketView = (ListView) findViewById(R.id.list_view);
+
+        SharedPreferences sharedprefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed = sharedprefs.edit();
+        ed.putInt("prefV", 1);
+        ed.commit();
+
+        Market.SetDisplayCurrency(sharedprefs.getString("display_currency", "usd"));
 
         korbitView = (WebView) findViewById(R.id.korbitView);
 
@@ -311,8 +371,7 @@ public class NewMainActivity extends AdlibActivity
             }
         });
 
-        MarketAdapter adapter = new MarketAdapter(this, markets);
-        marketView.setAdapter(adapter);
+        initMarkets();
 
         initAds();
         createAdlibAd();
@@ -332,15 +391,22 @@ public class NewMainActivity extends AdlibActivity
         {
             m.getNewData();
         }
-        timeTextView.setText(android.text.format.DateFormat.format("yyyy-MM-dd HH:mm:ss", new java.util.Date()));
+        timeTextView.setText(android.text.format.DateFormat.format("HH:mm:ss", new java.util.Date()));
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        SharedPreferences shareprefs = PreferenceManager.getDefaultSharedPreferences(this);
-        update_rate_mins = Integer.parseInt(shareprefs.getString("refresh_preference","5"));
+        SharedPreferences sharedprefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String disp_cur = sharedprefs.getString("display_currency", "usd");
+        if(!Market.GetDisplayCurrencyName().equals(disp_cur))
+        {
+            Market.SetDisplayCurrency(disp_cur);
+            initMarkets();
+        }
+
+        update_rate_mins = Integer.parseInt(sharedprefs.getString("refresh_preference","5"));
         TimerTask r = new TimerTask() {
             @Override
             public void run() {
@@ -356,6 +422,7 @@ public class NewMainActivity extends AdlibActivity
             timer = new Timer();
             timer.scheduleAtFixedRate(r, 0, update_rate_mins * 60 * 1000);
         }
+
         //if(!localeKR) adView.resume();
         //else adamView.resume();
     }

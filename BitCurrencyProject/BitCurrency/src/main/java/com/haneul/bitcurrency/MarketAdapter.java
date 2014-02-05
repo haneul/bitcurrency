@@ -38,11 +38,12 @@ public class MarketAdapter extends ArrayAdapter<Market> {
         TextView prevView = (TextView) rowView.findViewById(R.id.prevs);
         Market m = markets.get(position);
         textView.setText(m.name);
-        valueView.setText(String.format("$ %.2f", m.value));
+        valueView.setText(m.getValueString());
         prevView.setText(m.getRecentData());
         // Change the icon for Windows and iPhone
         ImageView updown = (ImageView) rowView.findViewById(R.id.updown);
         updown.setImageResource(m.updown());
+
         if(m.additional != null)
         {
             TextView additional = (TextView) rowView.findViewById(R.id.additional);

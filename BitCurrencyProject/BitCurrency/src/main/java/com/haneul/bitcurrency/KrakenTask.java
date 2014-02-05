@@ -106,18 +106,11 @@ public class KrakenTask extends AsyncTask<Market, Void, Double> {
         }  catch(ClientProtocolException p)
         {} catch(IOException e)
         {}
-
+        target.pushNewData(ret);
         return ret;
     }
 
     protected void onPostExecute(Double result) {
-        /*if(Locale.getDefault().getCountry().equals("KR"))
-        {
-            resultView.setText(String.format("$ %.2f", result));
-            resultView2.setText(String.format("(%d 원)", (int) xxbtzkrw));
-        }
-        else resultView.setText(String.format("$ %.2f", result));*/
-        target.pushNewData(result);
         target.doneUpdate();
     }
 

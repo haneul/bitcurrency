@@ -7,8 +7,19 @@
         android:entryValues="@array/pref_sync_frequency_values"
         android:defaultValue="5"
         />
+    <ListPreference
+        android:key="display_currency"
+        android:title="@string/display_currency"
+        android:entries="@array/pref_display_currency_titles"
+        android:entryValues="@array/pref_display_currency_values"
+        android:defaultValue="usd"
+        />
 
     <PreferenceCategory android:title="Bitcoin">
+        <CheckBoxPreference
+            android:title="BitStamp"
+            android:key="bitstamp_btcusd"
+            android:defaultValue="true" />
         <CheckBoxPreference
             android:title="CoinBase"
             android:key="coinbase_btcusd"
@@ -37,24 +48,37 @@
             android:title="@string/korbit"
             android:key="korbit_btckrw"
             android:defaultValue="true" />
-        <!--<CheckBoxPreference
+        <CheckBoxPreference
             android:title="@string/ddengle"
             android:key="ddengle_btckrw"
+            android:defaultValue="true"
+            />
+        <CheckBoxPreference
+            android:title="XCoin"
+            android:key="xcoin_btckrw"
             android:defaultValue="false"
-            />-->
-
-
+            />
     </PreferenceCategory>
     <PreferenceCategory android:title="Litecoin">
         <CheckBoxPreference
             android:title="BTC-e"
             android:key="btce_ltcusd"
             android:defaultValue="true" />
-        <!--<CheckBoxPreference
+        <CheckBoxPreference
             android:title="@string/ddengle"
             android:key="ddengle_ltckrw"
-            android:defaultValue="false"
-            />-->
+            android:defaultValue="true"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Bit/Litecoin">
+        <CheckBoxPreference
+            android:title="BTC-e"
+            android:key="btce_btcltc"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:title="Kraken"
+            android:key="kraken_btcltc"
+            android:defaultValue="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

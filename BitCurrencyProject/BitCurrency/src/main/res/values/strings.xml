@@ -11,4 +11,5 @@
     <string name="ddengle">Ddengle</string>
     <string name="title_activity_new_main">MainActivity</string>
     <string name="automatic_update">Automatic Update</string>
+    <string name="display_currency">Display Currency</string>
 </resources>

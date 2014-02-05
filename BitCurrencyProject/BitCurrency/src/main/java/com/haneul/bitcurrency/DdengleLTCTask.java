@@ -22,22 +22,28 @@ import java.util.Locale;
 /**
  * Created by syhan on 2013. 12. 23..
  */
-public class HuobiTask extends AsyncTask<Market, Void, Double> {
+public class DdengleLTCTask extends AsyncTask<Market, Void, Double> {
 
     private double read_btc_to_usd(InputStream in) {
         double ret = 0;
-        byte [] strip = new byte[12];
         try{
-            in.read(strip, 0, 12);
             JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
             try {
                 reader.beginObject();
 
                 while(reader.hasNext()) {
                     String name = reader.nextName();
-                    if(name.equals("p_new"))
+                    if(name.equals("ticker"))
                     {
-                        ret = reader.nextDouble();
+                        reader.beginObject();
+                        while(reader.hasNext()) {
+                            if(reader.nextName().equals("last")) {
+                                ret = reader.nextDouble();
+                                break;
+                            }
+                            else reader.skipValue();
+                        }
+
                         break;
                     }
                     reader.skipValue();
@@ -56,12 +62,17 @@ public class HuobiTask extends AsyncTask<Market, Void, Double> {
         return ret;
     }
 
+    static private double usdkrw = 0;
+
     @Override
     protected Double doInBackground(Market... params) {
+        CurrencyChange c = CurrencyChange.getCurrency(Market.CURRENCY.USD, Market.CURRENCY.KRW);
+        usdkrw = c.getVal();
+
         target = params[0];
         double ret = 0;
         HttpClient client = new DefaultHttpClient();
-        HttpGet httpget = new HttpGet("https://detail.huobi.com/staticmarket/detail.html");
+        HttpGet httpget = new HttpGet("https://www.ddengle.com/api/ltcprice.php");
         try{
             HttpResponse response = client.execute(httpget);
             HttpEntity entity = response.getEntity();
@@ -79,14 +90,10 @@ public class HuobiTask extends AsyncTask<Market, Void, Double> {
         {} catch(IOException e)
         {}
         target.pushNewData(ret);
-
         return ret;
     }
 
     protected void onPostExecute(Double result) {
-
-//        NumberFormat cn = NumberFormat.getCurrencyInstance(Locale.CHINA);
-//        target.additional = "("+cn.format(result)+")";
         target.doneUpdate();
     }
 
